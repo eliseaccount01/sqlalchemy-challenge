@@ -41,25 +41,25 @@ def welcome():
     )
 
 
-@app.route("/api/v1.0/precipitaton")
-def precipiation():
+@app.route("/api/v1.0/precipitation")
+def precipitation():
      # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    # Query precipiation 
+    # Query precipitation 
     sel = [Measurement.date, Measurement.prcp]
     date = dt.datetime(2016,8,23)
-    precipiation = session.query(*sel).filter(Measurement.date >= date)
+    precipitation = session.query(*sel).filter(Measurement.date >= date).all()
 
     #Close session
     session.close()
 
     #Change tuple into a normal list 
-    precipiation_list= list(np.ravel(precipiation))
+    precipitation_list= list(np.ravel(precipitation))
 
     #Create a dictionary 
     precipitation_dict = {
-        "date":precipiation_list
+        "date":precipitation_list
         }
 
     #return JSON 
@@ -79,7 +79,8 @@ def stations():
     session.close()
 
     # Convert list of tuples into normal list
-    station_list = list(np.ravel(station_names))
+    station_list = [station for station in station_names]
+    print(station_list)
 
     #Return JSON 
     return jsonify(station_list)
@@ -98,6 +99,7 @@ def tobs():
 
     # Convert list of tuples into normal list
     temperatures = [temp[0] for temp in temperatures]
+    print(temperatures)
 
     #Return JSON 
     return jsonify(temperatures)
